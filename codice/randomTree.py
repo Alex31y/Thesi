@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 from sklearn import linear_model
 from sklearn.feature_selection import RFECV
@@ -8,7 +9,7 @@ from matplotlib import pylab
 
 df = pd.read_csv("dataset.csv")
 
-list = ['id','nameProject','testCase', "Unnamed: 0", "lcom2", "numCoveredLines", "mpc", "halsteadLength", "halsteadVolume", "projectSourceLinesCovered"]
+list = ['id','nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered"]
 y = df.numCoveredLines
 df = df.drop(list,axis = 1 )
 
@@ -18,19 +19,32 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.metrics import f1_score,confusion_matrix
 from sklearn.metrics import accuracy_score
 
-df2 = df[['tloc', 'assertionDensity', 'loc', 'cbo', 'wmc', 'rfc', 'halsteadVocabulary', 'ExecutionTime']]
+df2 = df[['tloc', 'halsteadLength', 'loc', 'wmc', 'godClass', 'halsteadVolume']]
 # split data train 70 % and test 30 %
 x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
+y_train = np.log1p(y_train)
 
 #random forest classifier with n_estimators=10 (default)
-clf_rf = RandomForestClassifier(n_estimators = 100, random_state=42)
-clr_rf = clf_rf.fit(x_train,y_train)
+#clf_rf = RandomForestClassifier(n_estimators = 100, random_state=42)
+#clr_rf = clf_rf.fit(x_train,y_train)
 
-ac = accuracy_score(y_test,clf_rf.predict(x_test))
-print('Accuracy is: ',ac)
+#ac = accuracy_score(y_test,clf_rf.predict(x_test))
+#print('Accuracy is: ',ac)
 #cm = confusion_matrix(y_test,clf_rf.predict(x_test))
 #sns.heatmap(cm,annot=True,fmt="d")
 #pylab.show()
+
+ols = linear_model.LinearRegression()
+
+rfecv = RFECV(estimator=ols, step=1, scoring="neg_mean_squared_error", cv=4, verbose=0, n_jobs=4)
+rfecv.fit(x_train, y_train)
+rfecv.transform(x_train)
+print('Optimal number of features :', rfecv.n_features_)
+print('Best features :', x_train.columns[rfecv.support_])
+ols = ols.fit(x_train,y_train)
+ac = accuracy_score(y_test,ols.predict(x_test))
+print('Accuracy is: ',ac)
+
 
 """
 from sklearn.feature_selection import SelectKBest, f_regression
@@ -75,32 +89,6 @@ rfecv = rfecv.fit(x_train, y_train)
 
 print('Optimal number of features :', rfecv.n_features_)
 print('Best features :', x_train.columns[rfecv.support_])
-
-
-ols = linear_model.LinearRegression()
-
-rfecv = RFECV(estimator=ols, step=1, scoring="neg_mean_squared_error", cv=4, verbose=0, n_jobs=4)
-rfecv.fit(x_train, y_train)
-rfecv.transform(x_train)
-print('Optimal number of features :', rfecv.n_features_)
-print('Best features :', x_train.columns[rfecv.support_])
-
-df2 = df[['isFlaky', 'tloc', 'tmcCabe', 'assertionDensity', 'assertionRoulette',
-       'mysteryGuest', 'eagerTest', 'sensitiveEquality', 'resourceOptimism',
-       'fireAndForget', 'loc', 'lcom5', 'cbo', 'wmc', 'rfc',
-       'halsteadVocabulary', 'classDataShouldBePrivate', 'complexClass',
-       'godClass', 'spaghettiCode',
-       'hIndexModificationsPerCoveredLine_window10',
-       'hIndexModificationsPerCoveredLine_window500']]
-# split data train 70 % and test 30 %
-x_train, x_test, y_train, y_test = train_test_split(df2, y, test_size=0.3, random_state=42)
-
-#random forest classifier with n_estimators=10 (default)
-clf_rf = RandomForestClassifier(n_estimators = 100, random_state=42)
-clr_rf = clf_rf.fit(x_train,y_train)
-
-ac = accuracy_score(y_test,clf_rf.predict(x_test))
-print('Accuracy is: ',ac)
 
 """
 
