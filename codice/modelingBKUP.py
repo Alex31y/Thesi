@@ -17,7 +17,7 @@ y = df.numCoveredLines
 df = df.drop(list,axis = 1 )
 # print(df.columns)
 # split data train 70 % and test 30 %
-x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
+x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=44)
 y_train = np.log1p(y_train)
 
 def rmse_cv(model):

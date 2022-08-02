@@ -10,21 +10,14 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\codice2\test.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
-        <entry key="\codice2\train.csv">
-          <value>
-            <Attribute>
-              <option name="separator" value="," />
-            </Attribute>
-          </value>
-        </entry>
         <entry key="\codice\dataset.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\codice\result.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -38,7 +31,7 @@
             </Attribute>
           </value>
         </entry>
-        <entry key="\codice\ridge_sol.csv">
+        <entry key="\codice\ridge2.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />
@@ -46,6 +39,13 @@
           </value>
         </entry>
         <entry key="\codice\sol.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\codice\xgb.csv">
           <value>
             <Attribute>
               <option name="separator" value="," />

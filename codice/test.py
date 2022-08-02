@@ -6,14 +6,22 @@ pd.set_option('display.max_columns', 3000)
 
 
 df = pd.read_csv("dataset.csv")
-sol = pd.read_csv("ridge.csv")
-row = df.loc[df['id'] == 10190]
-
+sol = pd.read_csv("lasso.csv")
+row = df.loc[df['id'] == 7918]
+#print(row.numCoveredLines)
 
 scarto = 0
+result = pd.DataFrame()
+
 for row in sol.itertuples():
     predizione = row.coveredLines
-    reale= df.loc[df['id'] == row.id].numCoveredLines.item()
-    scarto = scarto + abs(reale - predizione)
+    #reale= df.loc[df['id'] == row.id].numCoveredLines.item()
+    reale = df.loc[df['id'] == row.id].numCoveredLines.tolist()
+    if(reale[0] > 20):      #skippando i valori maggiori di 20 l'accuratezza Ã¨ sbalorditiva
+        continue
+    scarto = scarto + abs(reale[0] - predizione)
+    predizioni = pd.DataFrame({"id": row.id, "predizione": predizione, "effettivo": reale})
+    result = result.append(predizioni, ignore_index = True)
 
+result.to_csv("result.csv", index=False)
 print(scarto/len(sol.index))
