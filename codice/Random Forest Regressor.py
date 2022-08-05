@@ -12,13 +12,14 @@ from sklearn.model_selection import cross_val_score, train_test_split, GridSearc
 df = pd.read_csv("csvume/dataset.csv")
 #df = df[df['nameProject'].str.match('Achilles')]
 list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered", "numCoveredLines", "godClass", "classDataShouldBePrivate", "complexClass", "fireAndForget", "resourceOptimism"]
+df = df.drop(df[df.numCoveredLines > 30].index)
 y = df.numCoveredLines
 df = df.drop(list,axis = 1 )
-df = df[['id']]
 
 # print(df.columns)
 # split data train 70 % and test 30 %
 x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
+
 #print(x_train.columns)
 
 # Create and train model
