@@ -9,46 +9,23 @@ from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsC
 from sklearn.model_selection import cross_val_score, train_test_split
 
 
-df = pd.read_csv("dataset.csv")
+df = pd.read_csv("csvume/dataset.csv")
 #df = df[df['nameProject'].str.match('logback')]
-list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered"]
+list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered", "numCoveredLines"]
 y = df.numCoveredLines
 df = df.drop(list,axis = 1 )
 # print(df.columns)
 # split data train 70 % and test 30 %
-x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=40)
+x_train, x_test, y_train, y_test = train_test_split(df, y, test_size=0.3, random_state=42)
+#for i in range(1, 37):
+    #x_train, x_test, y_train, y_test = train_test_split(df.iloc[:, [0, i]], y, test_size=0.3, random_state=42)
+#print(x_train.columns)
 y_train = np.log1p(y_train)
 
-from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsCV
 from sklearn.model_selection import cross_val_score
-
 def rmse_cv(model):
-    rmse= np.sqrt(-cross_val_score(model, x_train, y_train, scoring="neg_mean_squared_error", cv = 5))
+    rmse= np.sqrt(-cross_val_score(model, x_train, y_train, scoring="neg_mean_absolute_error", cv = 5))
     return(rmse)
-
-model_ridge = Ridge()
-alphas = [0.05, 0.1, 0.3, 1, 3, 5, 10, 15, 30, 50, 75]
-cv_ridge = [rmse_cv(Ridge(alpha = alpha)).mean()
-            for alpha in alphas]
-cv_ridge = pd.Series(cv_ridge, index = alphas)
-cv_ridge.plot(title = "Validation - Just Do It")
-plt.xlabel("alpha")
-plt.ylabel("rmse")
-print(cv_ridge.min())
-
-#RIDGE
-model_ridge = Ridge(alpha = 0.05).fit(x_train, y_train)
-ridge_preds = np.expm1(model_ridge.predict(x_test))
-predizioni = pd.DataFrame({"id":x_test.id, "coveredLines":ridge_preds})
-predizioni.to_csv("ridge.csv", index = False)
-
-#LASSO
-model_lasso = LassoCV(alphas = [1, 0.1, 0.001, 0.0005]).fit(x_train, y_train)
-print(rmse_cv(model_lasso).mean())
-coef = pd.Series(model_lasso.coef_, index = x_train.columns)
-lasso_preds = np.expm1(model_ridge.predict(x_test))
-predizioni = pd.DataFrame({"id":x_test.id, "coveredLines":lasso_preds})
-predizioni.to_csv("lasso.csv", index = False)
 
 #XGB
 import xgboost as xgb
@@ -57,7 +34,39 @@ params = {"max_depth":2, "eta":0.1}
 model = xgb.cv(params, dtrain,  num_boost_round=500, early_stopping_rounds=100)
 
 model_xgb = xgb.XGBRegressor(n_estimators=360, max_depth=2, learning_rate=0.1) #the params were tuned using xgb.cv
+print(rmse_cv(model_xgb).mean())
 model_xgb.fit(x_train, y_train)
 xgb_preds = np.expm1(model_xgb.predict(x_test))
 predizioni = pd.DataFrame({"id":x_test.id, "coveredLines":xgb_preds})
-predizioni.to_csv("xgb.csv", index = False)
+predizioni.to_csv("csvume/xgb.csv", index = False)
+
+
+
+#RIDGE
+from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsCV
+model_ridge = Ridge()
+alphas = [0.05, 0.1, 0.3, 1, 3, 5, 10, 15, 30, 50, 75]
+cv_ridge = [rmse_cv(Ridge(alpha = alpha)).mean()
+            for alpha in alphas]
+cv_ridge = pd.Series(cv_ridge, index = alphas)
+cv_ridge.plot(title = "Validation - Just Do It")
+plt.xlabel("alpha")
+plt.ylabel("rmse")
+print("Ridge")
+print(cv_ridge.min())
+model_ridge = Ridge(alpha = 0.05).fit(x_train, y_train)
+ridge_preds = np.expm1(model_ridge.predict(x_test))
+predizioni = pd.DataFrame({"id":x_test.id, "coveredLines":ridge_preds})
+predizioni.to_csv("csvume/ridge.csv", index = False)
+
+#LASSO
+model_lasso = LassoCV(alphas = [1, 0.1, 0.001, 0.0005]).fit(x_train, y_train)
+print("Lasso")
+print(rmse_cv(model_lasso).mean())
+coef = pd.Series(model_lasso.coef_, index = x_train.columns)
+lasso_preds = np.expm1(model_ridge.predict(x_test))
+predizioni = pd.DataFrame({"id":x_test.id, "coveredLines":lasso_preds})
+predizioni.to_csv("csvume/lasso.csv", index = False)
+"""
+
+"""

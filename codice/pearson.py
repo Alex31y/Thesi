@@ -4,7 +4,7 @@ import pylab
 from matplotlib import pyplot as plt
 
 pd.options.display.width = 0
-df = pd.read_csv("dataset.csv")
+df = pd.read_csv("csvume/dataset.csv")
 print(len(df.columns))
 list = ['id','nameProject','testCase', "Unnamed: 0", "lcom2", "mpc", "halsteadLength", "halsteadVolume"]
 df = df.drop(list,axis = 1 )

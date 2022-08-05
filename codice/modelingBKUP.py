@@ -10,7 +10,7 @@ from sklearn.linear_model import Ridge, RidgeCV, ElasticNet, LassoCV, LassoLarsC
 from sklearn.model_selection import cross_val_score, train_test_split
 
 
-df = pd.read_csv("dataset.csv")
+df = pd.read_csv("csvume/dataset.csv")
 df = df[df['nameProject'].str.match('logback')]
 list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered"]
 y = df.numCoveredLines
