@@ -2,6 +2,7 @@ import pandas as pd
 from scipy.stats import pearsonr, spearmanr
 
 data = pd.read_csv("csvume/dataset.csv")
+print(len(data.columns))
 list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered", "isFlaky"]
 data = data.drop(list,axis = 1 )
 print(data.columns)
