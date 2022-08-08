@@ -1,3 +1,4 @@
+import numpy as np
 import pandas as pd
 import seaborn as sns
 from matplotlib import pyplot as plt, pyplot
@@ -10,8 +11,8 @@ pd.set_option('display.max_columns', 3000)
 
 
 data = pd.read_csv("csvume/dataset.csv")
-print(data.describe())
-print(data.nameProject.unique())
+#print(data.describe())
+#print(data.nameProject.unique())
 
 # partiziono il dataset per progetto
 logback = data[data['nameProject'].str.match('logback')]
@@ -33,7 +34,25 @@ spring = data[data['nameProject'].str.match('spring-boot')]
 wro4j = data[data['nameProject'].str.match('wro4j')]
 alluxio = data[data['nameProject'].str.match('alluxio')]
 
+#scatter plot
+Activiti = Activiti.drop(Activiti[Activiti.numCoveredLines > 25].index)
+pyplot.scatter(Activiti.tloc, Activiti.numCoveredLines)
+#pyplot.scatter(httprequest.tloc, httprequest.numCoveredLines)
+pyplot.show()
+
+df = Activiti[['tloc', 'numCoveredLines']]
+
+#df = pd.concat([httprequest.tloc, httprequest.numCoveredLines, Activiti.tloc, Activiti.numCoveredLines], axis=1, ignore_index=True)
+df.to_csv("csvume\Activiti2.csv", index = False)
+
 """
+
+#singoli progetti
+list = [logback, orbit, httprequest, hector, okhttp, ninja, achille, elastic, undertow, Activiti, ambari, incubator, hbase, httpcore, Java, spring, wro4j, alluxio]
+for element in list:
+    print(element.shape[0])
+    
+#dataset modularizzato sui progetti  
 df = httprequest.append(okhttp)
 df = df.append(ninja)
 df = df.append(achille)
@@ -44,14 +63,6 @@ df = df.append(spring)
 df = df.append(wro4j)
 print(df.nameProject.unique())
 
-df.to_csv("csvume\imeglio.csv", index = False)
 """
-
-Activiti = Activiti.drop(Activiti[Activiti.numCoveredLines > 12].index)
-pyplot.scatter(Activiti.tloc, Activiti.numCoveredLines)
-pyplot.scatter(httprequest.tloc, httprequest.numCoveredLines)
-pyplot.show()
-
-
 
 

@@ -11,8 +11,8 @@ from sklearn.model_selection import cross_val_score, train_test_split, GridSearc
 
 df = pd.read_csv("csvume/dataset.csv")
 #df = df[df['nameProject'].str.match('Achilles')]
-list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered", "numCoveredLines", "godClass", "classDataShouldBePrivate", "complexClass", "fireAndForget", "resourceOptimism"]
-df = df.drop(df[df.numCoveredLines > 30].index)
+list = ['nameProject','testCase', "Unnamed: 0", "projectSourceLinesCovered", "numCoveredLines", "godClass", "classDataShouldBePrivate", "complexClass", "fireAndForget"]
+df = df.drop(df[df.numCoveredLines > 18].index)
 y = df.numCoveredLines
 df = df.drop(list,axis = 1 )
 
