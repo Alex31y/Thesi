@@ -24,6 +24,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\codice\csvume\dataset.csv">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\codice\result.csv">
           <value>
             <Attribute>
