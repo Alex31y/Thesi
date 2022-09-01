@@ -34,6 +34,9 @@ spring = data[data['nameProject'].str.match('spring-boot')]
 wro4j = data[data['nameProject'].str.match('wro4j')]
 alluxio = data[data['nameProject'].str.match('alluxio')]
 
+Activiti.to_csv("Activiti.csv", index = False)
+httprequest.to_csv("httpreq.csv", index = False)
+
 #scatter plot
 Activiti = Activiti.drop(Activiti[Activiti.numCoveredLines > 25].index)
 pyplot.scatter(Activiti.tloc, Activiti.numCoveredLines)
